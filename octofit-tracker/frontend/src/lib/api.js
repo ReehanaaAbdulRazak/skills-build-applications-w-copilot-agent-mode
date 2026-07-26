@@ -10,7 +10,13 @@ export function getApiBaseUrl() {
 
 export function buildApiUrl(resourcePath) {
   const normalizedPath = resourcePath.startsWith('/') ? resourcePath : `/${resourcePath}`;
-  return `${getApiBaseUrl()}${normalizedPath}`;
+  const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+
+  if (codespaceName) {
+    return `https://${codespaceName}-8000.app.github.dev${normalizedPath}`;
+  }
+
+  return `http://localhost:8000${normalizedPath}`;
 }
 
 export async function fetchResource(resourcePath) {

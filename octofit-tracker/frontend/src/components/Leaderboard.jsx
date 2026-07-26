@@ -10,10 +10,10 @@ function Leaderboard() {
 
     async function loadLeaderboard() {
       try {
-        const apiBaseUrl = import.meta.env.VITE_CODESPACE_NAME
-          ? `https://${import.meta.env.VITE_CODESPACE_NAME}-8000.app.github.dev`
-          : 'http://localhost:8000';
-        const resourceUrl = `${apiBaseUrl}/api/leaderboard/`;
+        const codespaceName = import.meta.env.VITE_CODESPACE_NAME?.trim();
+        const resourceUrl = codespaceName
+          ? `https://${codespaceName}-8000.app.github.dev/api/leaderboard/`
+          : 'http://localhost:8000/api/leaderboard/';
         const response = await fetch(resourceUrl);
 
         if (!response.ok) {
