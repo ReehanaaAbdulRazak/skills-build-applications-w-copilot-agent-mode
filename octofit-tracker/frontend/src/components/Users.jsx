@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchResource } from '../lib/api';
+import { buildApiUrl } from '../lib/api';
 
 function Users() {
   const [items, setItems] = useState([]);
@@ -11,7 +11,16 @@ function Users() {
 
     async function loadUsers() {
       try {
-        const rows = await fetchResource('/api/users/');
+        const resourceUrl = buildApiUrl('/api/users/');
+        const response = await fetch(resourceUrl);
+
+        if (!response.ok) {
+          throw new Error('Unable to load users');
+        }
+
+        const payload = await response.json();
+        const rows = Array.isArray(payload) ? payload : payload?.results || payload?.items || payload?.data || [payload];
+
         if (!ignore) {
           setItems(rows);
         }

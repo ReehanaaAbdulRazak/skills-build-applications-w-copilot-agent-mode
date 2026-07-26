@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { fetchResource } from '../lib/api';
+import { buildApiUrl } from '../lib/api';
 
 function Workouts() {
   const [items, setItems] = useState([]);
@@ -11,7 +11,16 @@ function Workouts() {
 
     async function loadWorkouts() {
       try {
-        const rows = await fetchResource('/api/workouts/');
+        const resourceUrl = buildApiUrl('/api/workouts/');
+        const response = await fetch(resourceUrl);
+
+        if (!response.ok) {
+          throw new Error('Unable to load workouts');
+        }
+
+        const payload = await response.json();
+        const rows = Array.isArray(payload) ? payload : payload?.results || payload?.items || payload?.data || [payload];
+
         if (!ignore) {
           setItems(rows);
         }
